@@ -67,7 +67,7 @@ Ensure your server is structured as follows:
 ├── scan.php          # Backend API to scan directory for files
 ├── Friends.vcf       # Your contact files...
 ├── Work_Backup.csv
-└── Corporate.vcf
+├── Corporate.vcf
 └── ...
 ```
 
