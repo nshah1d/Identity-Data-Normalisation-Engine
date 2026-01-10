@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="pane-libraries">
+        <div class="pane-header">
+            <span>Server Index</span>
+            <span class="server-badge">PHP API</span>
+        </div>
+        <div class="library-list" id="libraryList">
+            <div style="padding:20px; color:#666; font-size:12px; text-align:center">Scanning...</div>
+        </div>
+    </nav>
+
+    <aside class="pane-list">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterContacts()">
+        </div>
+        <div class="list-container">
+            <div class="contact-scroll-area" id="contactList"></div>
+            <div class="alpha-gutter" id="alphaJumper"></div>
+        </div>
+    </aside>
+
+    <main class="pane-detail" id="detailView">
+        <div class="empty-state">
+            <h2 style="color:white;">Select a Contact</h2>
+            <p>Choose a directory to begin.</p>
+        </div>
+    </main>
+    
+    <div id="toast">Copied</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
