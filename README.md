@@ -68,6 +68,7 @@ Ensure your server is structured as follows:
 ├── Friends.vcf       # Your contact files...
 ├── Work_Backup.csv
 └── Corporate.vcf
+└── ...
 ```
 
 ---
