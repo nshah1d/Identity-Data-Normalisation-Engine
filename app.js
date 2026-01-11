@@ -102,7 +102,6 @@ function parseCSV(content) {
         if (iSuffix > -1 && row[iSuffix]) nameParts.push(row[iSuffix]);
 
         let fn = nameParts.join(' ').trim();
-
         if (!fn && iOrg > -1 && row[iOrg]) fn = row[iOrg];
         if (!fn) fn = "Unknown";
 
@@ -123,11 +122,11 @@ function parseCSV(content) {
         headers.forEach((h, i) => {
             if (!row[i]) return;
             const lowerH = h.toLowerCase();
+            const rawValue = row[i];
 
             if (lowerH.includes('phone') && lowerH.includes('value')) {
                 let typeH = h.replace(/Value/i, 'Type').replace(/value/i, 'Label'); 
                 let typeIdx = headers.indexOf(typeH);
-                
                 if(typeIdx === -1) {
                     if (headers[i-1] && headers[i-1].toLowerCase().includes('label')) typeIdx = i-1;
                 }
@@ -135,25 +134,38 @@ function parseCSV(content) {
                 let type = (typeIdx > -1) ? row[typeIdx] : 'Mobile';
                 type = type.replace(/[*]/g, '').trim() || 'Mobile';
 
-                const rawValue = row[i];
                 if (rawValue) {
                     const numbers = rawValue.includes(':::') ? rawValue.split(':::') : [rawValue];
-                    
                     numbers.forEach(num => {
-                        if (num.trim()) {
-                            contact.display.tel.push({ number: num.trim(), type: type });
-                        }
+                        if (num.trim()) contact.display.tel.push({ number: num.trim(), type: type });
                     });
                 }
             }
+
             else if ((lowerH.includes('e-mail') || lowerH.includes('email')) && lowerH.includes('value')) {
                 let typeIdx = i - 1;
                 let type = (typeIdx > -1) ? row[typeIdx] : 'Home';
                 type = type.replace(/[*]/g, '').trim() || 'Home';
-                contact.display.email.push({ email: row[i], type: type });
+                
+                if (rawValue) {
+                    const emails = rawValue.includes(':::') ? rawValue.split(':::') : [rawValue];
+                    emails.forEach(email => {
+                        if (email.trim()) contact.display.email.push({ email: email.trim(), type: type });
+                    });
+                }
             }
+
+            else if((lowerH.includes('website') || lowerH.includes('web page')) && lowerH.includes('value')) {
+                if (rawValue) {
+                    const sites = rawValue.includes(':::') ? rawValue.split(':::') : [rawValue];
+                    sites.forEach(site => {
+                        if (site.trim()) contact.display.extras.push({ label: 'Website', value: site.trim() });
+                    });
+                }
+            }
+
             else if (lowerH.includes('address') && lowerH.includes('formatted')) {
-                 if (!contact.display.adr) contact.display.adr = row[i].replace(/\n/g, ', ');
+                 if (!contact.display.adr) contact.display.adr = rawValue.replace(/\n/g, ', ');
             }
         });
 
