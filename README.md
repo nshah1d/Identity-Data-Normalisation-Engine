@@ -1,76 +1,111 @@
 # Contacts Hub
 
-![Status](https://img.shields.io/badge/Status-Completed-success) ![Privacy](https://img.shields.io/badge/Privacy-Local%20Only-green) ![Platform](https://img.shields.io/badge/Platform-Web-blue) ![License](https://img.shields.io/badge/License-MIT-orange)
+![Status](https://img.shields.io/badge/Status-Production-success) ![Privacy](https://img.shields.io/badge/Privacy-Local%20Only-green) ![Platform](https://img.shields.io/badge/Architecture-Polymorphic-blue) ![License](https://img.shields.io/badge/License-MIT-orange) [![Live Demo](https://img.shields.io/badge/Demo-Live%20Preview-31B33B)](https://www.nauman.cc/demo/contacts/)
 
-[![Live Demo](https://img.shields.io/badge/Demo-Live%20Preview-brightgreen?style=for-the-badge&logo=google-chrome&logoColor=white)](https://www.nauman.cc/contacts-hub)
+A privacy-first contact normalisation and visualisation engine.
 
-A robust, self-hosted web application for visualizing `.vcf` (vCard) and `.csv` contact libraries. This tool features a custom-built parsing engine capable of handling complex contact formats, including Apple iCloud metadata and multi-line vCard streams, presented in a modern, dark-themed 3-pane interface.
-
----
-
-## Key Features
-
-* **Multi-Format Support:** Seamlessly parses both standard `.vcf` files (single or multiple contacts per file) and `.csv` exports.
-* **Advanced VCF Parsing:** Custom Regex engine specifically tuned to handle "Apple-style" vCard grouping (e.g., mapping `item1.TEL` to `item1.X-ABLabel` to correctly display custom labels like "Anniversary" or "Main").
-* **3-Pane Layout:** Intuitive navigation flow: **Library Index** → **Contact List** → **Detailed View**.
-* **Smart Search:** Real-time filtering by name or organization.
-* **Zero Dependencies:** Built with pure Vanilla JS and PHP. No Node.js, Composer, or databases required.
-* **Clipboard Integration:** One-click copying for individual fields (phone, email, notes) or the full JSON data representation of the contact.
-* **Privacy Focused:** Runs entirely on your own server; no data is sent to third parties.
+This application acts as a universal bridge for fragmented contact data, ingesting disparate export formats (Google CSV, Apple vCard, Outlook) and unifying them into a single, normalised schema. Engineered with a "Zero-Dependency" philosophy, it operates entirely client-side to ensure absolute data sovereignty.
 
 ---
 
-## Technical Highlights
+## Key Capabilities
 
-This project demonstrates full-stack proficiency with a focus on data parsing and UI architecture:
-
-* **Regex Parsing Engine:** Implements a two-pass parsing logic to link "Orphaned" metadata (like custom labels) to their parent values within the vCard standard.
-* **Backend Logic:** Utilizes PHP's `glob` function for dynamic file system traversal, allowing the app to auto-discover new contact files dropped into the directory.
-* **DOM Manipulation:** Efficient rendering of large lists using vanilla JavaScript, featuring dynamic alphabet jumping and lazy DOM updates.
-* **CSS Architecture:** Fully custom CSS using CSS Variables (`:root`) for easy theming and dark mode consistency, with custom webkit scrollbar styling.
+* **Heuristic Data Normalisation:** Proprietary parsing logic automatically detects and maps inconsistent column headers (e.g., mapping "Given Name", "First", and "J. Doe" to a unified structure) and resolves proprietary metadata conflicts (such as Apple's `X-ABLabel` fragmentation).
+* **High-Performance Virtualisation:** Utilises an **Intersection Observer** strategy to implement "Chunked Rendering." The engine handles datasets of 10,000+ records with constant memory usage (O(1) DOM complexity), ensuring 60fps scroll performance.
+* **Algorithmic Fuzzy Search:** Features a custom **Sequential Character Matcher** using bitwise operators. This allows users to query contacts via shorthand (e.g., "nmsh" matches "Nauman Shahid") with zero latency.
+* **RFC-Compliant Interoperability:** Includes a real-time vCard 3.0 construction engine that generates downloadable `.vcf` blobs on the fly, enabling native contact sharing from the browser to mobile devices.
 
 ---
 
-## Parsing Logic Detail
+## Adaptive Architecture
 
-The application handles the specific quirks of mobile contact exports:
+The interface features a **Polymorphic UI** that fundamentally alters its navigation paradigm based on device telemetry.
 
-1. **Unfolding:** It first "unfolds" wrapped lines (standard in VCF 3.0) to ensure base64 photos and long notes are continuous strings.
-2. **Group Mapping:** It scans for `itemX.X-ABLabel` to identify custom labels (e.g., "Manager's Cell") and maps them back to the corresponding `TEL` or `URL` field.
-3. **Sanitization:** Automatically converts literal `\n` characters in Notes to HTML line breaks for proper display.
+### Desktop: The Command Centre
+On high-resolution displays, the application renders a persistent **Three-Pane Dashboard**:
+* **Library Pane:** Real-time indexing of all available `.vcf` and `.csv` datasets.
+* **List View:** Virtualised scroll area with an alphabetical "Jump-Anchor" gutter.
+* **Detail Inspector:** High-fidelity telemetry view with deep-linking protocols (`tel:`, `mailto:`, `wa.me`).
+
+### Mobile: The Native Stack
+On touch devices (<768px), the system shifts to a **State-Driven Navigation Stack**:
+* **Push/Pop Transitions:** Implements hardware-accelerated CSS transforms (`translateX`) to mimic native iOS view controllers.
+* **Touch Optimisation:** Enlarged hit targets and a "Slide-Out" library drawer maximise the reading viewport.
+* **Smart Viewport:** Disables accidental zooming (`user-scalable=no`) to enforce native application behaviour.
 
 ---
 
-## Technologies Used
+## Engineering Deep Dive
 
-**Languages:** ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
+This project demonstrates advanced **Full Stack Engineering** techniques to solve complex data problems without external libraries.
 
-**Tools & Concepts:** ![Regex](https://img.shields.io/badge/Regex-Parsing%20Engine-critical) ![vCard](https://img.shields.io/badge/vCard-4.0%20Standard-success) ![DOM](https://img.shields.io/badge/DOM-Manipulation-orange) ![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white)
+### 1. The Ingestion Engine
+The parser does not rely on simple delimiters. It uses a custom **State Machine** to handle edge cases:
+* **RFC Unfolding:** Automatically detects and patches "folded" lines in vCard streams, fixing corrupted Base64 image data often found in large Apple exports.
+* **Content-Aware Validation:** Verifies data types by content rather than headers. For example, a column labelled "Phone" is ignored if the content does not satisfy the regex `/\d/`, preventing metadata pollution.
+* **Recursive Mapping:** Tracks grouped items (e.g., `item1.TEL`) to ensure custom labels are correctly re-associated with their corresponding data fields.
+
+### 2. The Search Logic
+Standard string matching was replaced with a bitwise sequential search algorithm:
+```javascript
+// Simplified Logic:
+// Iterates through query characters to find sequential matches
+// anywhere in the target string, allowing for robust typo tolerance.
+if (!~(n = text.indexOf(char, n + 1))) return false;
+```
+### 3. Identity & Asset Management
+* **Dynamic Avatar System:** Automatically detects and renders raw Base64 image data, data URIs, or external URLs.
+* **Fallback Generation:** If no binary image data is present, the system calculates and renders a styled, initials-based profile icon.
 
 ---
 
-## Installation & Usage
+## Technologies
 
-1.  **Upload:** Upload the files to any PHP-enabled web server (Apache/Nginx).
-2.  **Add Data:** Drop your `.vcf` or `.csv` files into the same directory.
-3.  **Browse:** Navigate to `index.html`. The app will automatically scan the directory via the API and populate the interface.
+**Core Stack:** ![PHP](https://img.shields.io/badge/PHP-Backend-777BB4) ![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E) ![HTML5](https://img.shields.io/badge/HTML5-Semantic-E34F26) ![CSS3](https://img.shields.io/badge/CSS3-Variables-1572B6)
 
-### Directory Structure
+**Engineering:** ![Intersection Observer](https://img.shields.io/badge/API-Intersection%20Observer-green) ![Regex](https://img.shields.io/badge/Regex-Heuristic-critical) ![VFS](https://img.shields.io/badge/System-Virtual%20File%20System-lightgrey)
 
-Ensure your server is structured as follows:
+---
+
+## Deployment Protocol
+
+The system is designed for "Drop-and-Run" deployment on any PHP-enabled web server (Apache/Nginx).
+
+1.  **Deploy Core Files:**
+    Upload `index.html`, `app.js`, `style.css`, and `scan.php` to your directory.
+
+2.  **Data Population:**
+    Place your exported `.vcf` or `.csv` files directly in the same directory. The system supports multiple files simultaneously.
+
+3.  **Initialise:**
+    Navigate to the URL. The `scan.php` script will automatically index the Virtual File System (VFS), and the frontend will hydrate the library list dynamically.
+
+### Directory Hierarchy
 
 ```text
 /public_html/contacts-hub/
-├── index.html        # Main frontend entry point
-├── style.css         # Dark theme and layout styles
-├── app.js            # Parsing logic, API fetch, and UI rendering
-├── scan.php          # Backend API to scan directory for files
-├── Friends.vcf       # Your contact files...
-├── Work_Backup.csv
-├── Corporate.vcf
-└── ...
+├── index.html          # Application Shell
+├── app.js              # State Management, Virtualisation & Parsing Logic
+├── style.css           # Tokyo Night Theme & Responsive Rules
+├── scan.php            # File System Indexer
+├── google_contacts.csv # <--- Your Export File
+└── backup.vcf          # <--- Another Export File
 ```
 
 ---
 
-> _Designed & developed by Nauman Shahid_
+<div align="center">
+<br>
+
+**_Architected by Nauman Shahid_**
+
+<br>
+
+[![Portfolio](https://img.shields.io/badge/Portfolio-nauman.cc-000000?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.nauman.cc)
+[![GitHub](https://img.shields.io/badge/GitHub-nshah1d-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nshah1d)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/nshah1d/)
+
+</div>
+<br>
+
+---

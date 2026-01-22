@@ -2,25 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacts Hub</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Contacts Hub // Universal Manager</title>
 
-    <nav class="pane-libraries">
+    <meta name="description" content="Privacy-first contact normalisation engine. Unifies Google, Apple, and Outlook exports into a single schema locally. Zero dependencies. Architected by Nauman Shahid." />
+    <meta name="keywords" content="Universal Contact Manager, vCard Parser, CSV Normalizer, Data Sovereignty, WebOS Interface, Privacy First, ETL Pipeline, Nauman Shahid" />
+    <meta name="author" content="Nauman Shahid" />
+    <meta name="theme-color" content="#1a1b26" />
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.nauman.cc/demo/contacts" />
+    <meta property="og:title" content="Contacts Hub // Universal Manager" />
+    <meta property="og:description" content="Privacy-first contact normalisation engine. Unifies Google, Apple, and Outlook exports into a single schema locally. Zero dependencies." />
+    <meta property="og:image" content="https://www.nauman.cc/resources/contacts_project.png" />
+    <meta property="og:site_name" content="Nauman Shahid // Operational Strategist & Developer" />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://www.nauman.cc/demo/contacts" />
+    <meta property="twitter:title" content="Contacts Hub // Universal Manager" />
+    <meta property="twitter:description" content="Privacy-first contact normalisation engine. Unifies Google, Apple, and Outlook exports into a single schema locally." />
+    <meta property="twitter:image" content="https://www.nauman.cc/resources/contacts_project.png" />
+
+    <link rel="icon" type="image/png" href="https://www.nauman.cc/logotrans.png" />
+    <link rel="apple-touch-icon" href="https://www.nauman.cc/logotrans.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Contacts Hub" />
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+</head>
+<body class="view-libs">
+
+    <nav class="pane pane-libraries" id="pane-libs">
         <div class="pane-header">
-            <span>Server Index</span>
-            <span class="server-badge">PHP API</span>
+            <div class="header-content">
+                <span>Server Index</span>
+                <span class="server-badge">VFS v2.0</span>
+            </div>
         </div>
         <div class="library-list" id="libraryList">
-            <div style="padding:20px; color:#666; font-size:12px; text-align:center">Scanning...</div>
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <span>Scanning File System...</span>
+            </div>
         </div>
     </nav>
 
-    <aside class="pane-list">
+    <aside class="pane pane-list" id="pane-list">
+        <div class="pane-header mobile-nav">
+            <button class="nav-back" onclick="changeView('libs')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>Back</span>
+            </button>
+            <h2 id="listTitle">Contacts</h2>
+            <div class="header-spacer"></div>
+        </div>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterContacts()">
+            <div class="search-inner">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="searchInput" placeholder="Search name or company..." onkeyup="filterContacts()">
+            </div>
         </div>
         <div class="list-container">
             <div class="contact-scroll-area" id="contactList"></div>
@@ -28,14 +72,24 @@
         </div>
     </aside>
 
-    <main class="pane-detail" id="detailView">
-        <div class="empty-state">
-            <h2 style="color:white;">Select a Contact</h2>
-            <p>Choose a directory to begin.</p>
+    <main class="pane pane-detail" id="pane-detail">
+        <div class="pane-header mobile-nav transparent">
+            <button class="nav-back text-white" onclick="changeView('list')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>List</span>
+            </button>
+        </div>
+        
+        <div id="detailContent" class="detail-container">
+            <div class="empty-state">
+                <div class="empty-icon">👤</div>
+                <h2>Select a Contact</h2>
+                <p>Choose an entry from the list to view full telemetry and metadata.</p>
+            </div>
         </div>
     </main>
     
-    <div id="toast">Copied</div>
+    <div id="toast">Copied to Clipboard</div>
 
     <script src="app.js"></script>
 </body>
