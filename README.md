@@ -64,7 +64,7 @@ if (!~(n = text.indexOf(char, n + 1))) return false;
 
 **Core Stack:** ![PHP](https://img.shields.io/badge/PHP-Backend-777BB4) ![JavaScript](https://img.shields.io/badge/JavaScript-ES6%2B-F7DF1E) ![HTML5](https://img.shields.io/badge/HTML5-Semantic-E34F26) ![CSS3](https://img.shields.io/badge/CSS3-Variables-1572B6)
 
-**Engineering:** ![Intersection Observer](https://img.shields.io/badge/API-Intersection%20Observer-green) ![Regex](https://img.shields.io/badge/Regex-Heuristic-critical) ![VFS](https://img.shields.io/badge/System-Virtual%20File%20System-lightgrey)
+**Engineering:** ![Intersection Observer](https://img.shields.io/badge/API-Intersection%20Observer-green) ![Data Integration](https://img.shields.io/badge/Data-Integration-critical) ![Algorithms](https://img.shields.io/badge/Algorithms-Bitwise%20Search-lightgrey)
 
 ---
 
